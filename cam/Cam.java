@@ -1,3 +1,4 @@
+package cam;
 
 import java.nio.ByteBuffer;
  
@@ -7,14 +8,10 @@ import javafx.scene.Scene;
 import javafx.scene.image.*;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
 import javafx.util.Duration;
-
-import cam.Frames;
 
 public class Cam extends Application 
  {
@@ -24,7 +21,7 @@ public class Cam extends Application
 
     GraphicsContext gc;
     Canvas canvas;
-    byte buffer[];  
+    byte[] buffer;
     PixelWriter pixelWriter; 
     PixelFormat<ByteBuffer> pixelFormat;
 
@@ -44,7 +41,7 @@ public class Cam extends Application
       
       frames = new Frames();
       
-      result = frames.open_shm("/frames");      
+      result = frames.open_shm("/frames");
       
       primaryStage.setTitle("Camera");
       Scene scene;
@@ -74,7 +71,7 @@ public class Cam extends Application
       pixelFormat = PixelFormat.getByteRgbInstance();
             
 
-      buffer = frames.get_frame();      
+      buffer = frames.get_frame();
       pixelWriter.setPixels(5, 5, FRAME_WIDTH, FRAME_HEIGHT, pixelFormat, buffer, 0, FRAME_WIDTH*3);
       
      }
