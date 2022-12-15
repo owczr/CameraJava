@@ -32,3 +32,4 @@ replay_pid*
 /out/
 mikroskop_java.iml
 *.iml
+/example.rgb

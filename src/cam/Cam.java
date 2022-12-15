@@ -1,6 +1,12 @@
 package cam;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 
 import javafx.application.Application;
@@ -18,6 +24,8 @@ import javafx.stage.Stage;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
+
+import javax.imageio.ImageIO;
 
 public class Cam extends Application {
     private static final int FRAME_WIDTH = 640;
@@ -211,7 +219,6 @@ public class Cam extends Application {
 
         //Creating a Group object
         Group root = new Group();
-
         root.getChildren().add(canvas);
 
         root.getChildren().add(vBox);
@@ -246,7 +253,13 @@ public class Cam extends Application {
         root.getChildren().add(snapButton);
 
 
-        timeline = new Timeline(new KeyFrame(Duration.millis(130), e -> disp_frame()));
+        timeline = new Timeline(new KeyFrame(Duration.millis(130), e -> {
+            try {
+                disp_frame();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        }));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
 
@@ -256,15 +269,16 @@ public class Cam extends Application {
         primaryStage.show();
     }
 
-    private void disp_frame() {
+    private void disp_frame() throws IOException {
         pixelWriter = gc.getPixelWriter();
         pixelFormat = PixelFormat.getByteRgbInstance();
 
         //buffer = frames.get_frame();
+        Path path = Paths.get("example.rgb");
 
-        byte[] bytes = new byte[3 * 480 * 640];
-        Arrays.fill( bytes, (byte) 0x5C );
-        buffer = bytes;
+        byte[] image = Files.readAllBytes(path);
+
+        buffer = image;
         pixelWriter.setPixels(0, 25, FRAME_WIDTH, FRAME_HEIGHT, pixelFormat, buffer, 0, FRAME_WIDTH * 3);
     }
 }
