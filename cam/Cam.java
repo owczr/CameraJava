@@ -66,7 +66,7 @@ public class Cam extends Application {
         //buffer = frames.get_frame();
 
         byte[] bytes = new byte[3 * 480 * 640];
-        Arrays.fill( bytes, (byte) 0xF );
+        Arrays.fill( bytes, (byte) 0x5C );
         buffer = bytes;
         pixelWriter.setPixels(5, 5, FRAME_WIDTH, FRAME_HEIGHT, pixelFormat, buffer, 0, FRAME_WIDTH * 3);
     }
