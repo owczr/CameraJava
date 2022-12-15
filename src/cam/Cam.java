@@ -68,6 +68,10 @@ public class Cam extends Application {
         Button rotateRightButton    = createButton("Rotate Right", 150, 580);
         Button snapButton   = createButton("Snap", 300, 690);
 
+        //Set actions
+        inButton.setOnAction(e -> {
+            System.out.println("1");
+        });
         //Dropdown combo box
         Text filtersText = createText("Filters", 0, 630);
         ComboBox filtersBox = createFiltersList();
@@ -117,6 +121,14 @@ public class Cam extends Application {
 
         buffer = image;
         pixelWriter.setPixels(0, 25, FRAME_WIDTH, FRAME_HEIGHT, pixelFormat, buffer, 0, FRAME_WIDTH * 3);
+    }
+    private void zoomInImage(){
+//        int newImageWidth = imageWidth * zoomLevel;
+//        int newImageHeight = imageHeight * zoomLevel;
+//        BufferedImage resizedImage = new BufferedImage(newImageWidth , newImageHeight, imageType);
+//        Graphics2D g = resizedImage.createGraphics();
+//        g.drawImage(originalImage, 0, 0, newImageWidth , newImageHeight , null);
+//        g.dispose();
     }
     private VBox createMenu(){
         Menu menu1 = new Menu("Main");
