@@ -28,5 +28,7 @@ hs_err_pid*
 replay_pid*
 
 /.idea/
-/cam/
+/src/cam/
 /out/
+mikroskop_java.iml
+*.iml
