@@ -355,7 +355,26 @@ public class JavaFXApp extends Application implements ChangeListener<P_move>
    }
 
    //TODO: Snapshot functions
-   public void save_shot(){}
+   public void save_shot()
+   {
+     FileChooser fileChooser = new FileChooser();
+     fileChooser.setTitle("Save snapshot");
+     fileChooser.getExtensionFilters().addAll(
+         new FileChooser.ExtensionFilter("All Files", "*.*"),
+         new FileChooser.ExtensionFilter("JPG", "*.jpg"),
+         new FileChooser.ExtensionFilter("PNG", "*.png"));
+     //Opening a dialog box
+     File file = fileChooser.showSaveDialog(stage);
+     //Save snapshot
+     if (file != null) {
+       try {
+         ImageIO.write(SwingFXUtils.fromFXImage(imageView2.getImage(),
+             null), "jpg", file);
+       } catch (IOException ex) {
+         System.out.println(ex.getMessage());
+       }
+     }
+   }
 
    public void discard_shot(){}
 
