@@ -72,10 +72,17 @@ public class Cam extends Application {
         Button snapButton   = createButton("Snap", 300, 690);
 
         //Set actions
-        inButton.setOnAction(e -> {
-            System.out.println("1");
-        });
         helpButton.setOnAction(this::documentationWindow);
+        rejectButton.setOnAction(this::discard_shot);
+        saveButton.setOnAction(this::save_shot);
+        upButton.setOnAction(this::move_up);
+        downButton.setOnAction(this::move_down);
+        leftButton.setOnAction(this::move_left);
+        rightButton.setOnAction(this::move_right);
+        inButton.setOnAction(this::zoom_in);
+        outButton.setOnAction(this::zoom_out);
+        rotateLeftButton.setOnAction(this::rotateLeft);
+        rotateRightButton.setOnAction(this::rotateRight);
         snapButton.setOnAction(this::second_window);
 
         //Dropdown combo box
@@ -114,6 +121,14 @@ public class Cam extends Application {
         Scene scene = new Scene(root,640, 720);
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    private void rotateRight(ActionEvent actionEvent) {
+        System.out.println("rotateRight");
+    }
+
+    private void rotateLeft(ActionEvent actionEvent) {
+        System.out.println("rotateLeft");
     }
 
     public void documentationWindow(javafx.event.ActionEvent actionEvent) {
