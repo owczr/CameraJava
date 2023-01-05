@@ -322,17 +322,17 @@ public class JavaFXApp extends Application implements ChangeListener<P_move>
      //TODO: funkcjonalosc (save,discard,copy)
      saveM.setOnAction(e -> {
        System.out.println("Save Selected");
-//      save_shot();
+       save_shot();
      });
 
      dcM.setOnAction(e-> {
        System.out.println("Discard Selected");
-//      discard_shot(secondaryStage);
+       discard_shot(secondaryStage);
      });
 
      copyM.setOnAction(e-> {
        System.out.println("Copy Selected");
-//      copy_shot();
+       copy_shot();
      });
 
      //TODO: przekopiowane setOnAction (menu2-menu5)
