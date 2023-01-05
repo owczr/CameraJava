@@ -327,7 +327,7 @@ public class JavaFXApp extends Application implements ChangeListener<P_move>
 
      dcM.setOnAction(e-> {
        System.out.println("Discard Selected");
-//      discard_shot();
+//      discard_shot(secondaryStage);
      });
 
      copyM.setOnAction(e-> {
@@ -376,7 +376,30 @@ public class JavaFXApp extends Application implements ChangeListener<P_move>
      }
    }
 
-   public void discard_shot(){}
+   public void discard_shot(Stage snapStage)
+   {
+     //TODO: czyszczenie buffora z snapshotem?
+
+     Alert alert = new Alert(AlertType.CONFIRMATION,
+         "Do you really want to discard the snapshot?.",
+         ButtonType.YES, ButtonType.NO);
+
+     alert.setResizable(true);
+     alert.onShownProperty().addListener(e -> {
+       Platform.runLater(() -> alert.setResizable(false));
+     });
+
+     Optional<ButtonType> result = alert.showAndWait();
+     if (result.get() == ButtonType.YES)
+     {
+       snapStage.close();
+       System.out.println("discard snapshot");
+     }
+     else
+     {
+     }
+
+   }
 
    public void copy_shot()
    {
