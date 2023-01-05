@@ -76,6 +76,8 @@ public class Cam extends Application {
             System.out.println("1");
         });
         helpButton.setOnAction(this::documentationWindow);
+        snapButton.setOnAction(this::second_window);
+
         //Dropdown combo box
         Text filtersText = createText("Filters", 0, 630);
         ComboBox filtersBox = createFiltersList();
@@ -180,8 +182,11 @@ public class Cam extends Application {
     private VBox createMenu(){
         Menu menu1 = new Menu("Main");
         MenuItem snapM = new MenuItem("Snapshot");
+        snapM.setOnAction(this::second_window);
         MenuItem startM = new MenuItem("Start");
+        startM.setOnAction(this::start_camera);
         MenuItem deviceM = new MenuItem("Device");
+        deviceM.setOnAction(this::choose_camera);
         menu1.getItems().addAll(snapM,startM,deviceM);
 
         Menu menu2 = new Menu("Edit");
@@ -190,26 +195,36 @@ public class Cam extends Application {
         menu2.getItems().addAll(zoomM,moveM);
 
         MenuItem zoomMI = new MenuItem("Zoom in");
+        zoomMI.setOnAction(this::zoom_in);
         MenuItem zoomMO = new MenuItem("Zoom out");
+        zoomMO.setOnAction(this::zoom_out);
         zoomM.getItems().addAll(zoomMI,zoomMO);
 
         MenuItem moveU = new MenuItem("Move up");
+        moveU.setOnAction(this::move_up);
         MenuItem moveD = new MenuItem("Move down");
+        moveD.setOnAction(this::move_down);
         MenuItem moveL = new MenuItem("Move left");
+        moveL.setOnAction(this::move_left);
         MenuItem moveR = new MenuItem("Move right");
+        moveR.setOnAction(this::move_right);
         moveM.getItems().addAll(moveU,moveD,moveL,moveR);
 
         Menu menu3 = new Menu("Filters");
         CheckMenuItem filter1 = new CheckMenuItem("Black&white");
+        filter1.setOnAction(this::filter1);
         CheckMenuItem filter2 = new CheckMenuItem("Negative");
+        filter2.setOnAction(this::filter2);
         menu3.getItems().addAll(filter1,filter2);
 
         Menu menu4 = new Menu("Tools");
         CheckMenuItem ledM = new CheckMenuItem("LED");
+        ledM.setOnAction(this::led);
         menu4.getItems().addAll(ledM);
 
         Menu menu5 = new Menu("Help");
         MenuItem docM = new MenuItem("Documentation");
+        docM.setOnAction(this::documentationWindow);
         menu5.getItems().addAll(docM);
 
 
@@ -262,25 +277,29 @@ public class Cam extends Application {
     }
 
     private void led(javafx.event.ActionEvent actionEvent) {
-    }
-    //Help - doc
-    private void doc(javafx.event.ActionEvent actionEvent) {
+        System.out.println("led");
     }
 
     //Filters
     private void filter2(javafx.event.ActionEvent actionEvent) {
+        System.out.println("filter2");
     }
     private void filter1(javafx.event.ActionEvent actionEvent) {
+        System.out.println("filter1");
     }
 
     //Edit - move
     private void move_down(javafx.event.ActionEvent actionEvent) {
+        System.out.println("move_down");
     }
     private void move_up(javafx.event.ActionEvent actionEvent) {
+        System.out.println("move_up");
     }
     private void move_left(javafx.event.ActionEvent actionEvent) {
+        System.out.println("move_left");
     }
     private void move_right(javafx.event.ActionEvent actionEvent) {
+        System.out.println("move_right");
     }
     //Edit - zoom
     public void zoom_in(javafx.event.ActionEvent actionEvent){
@@ -292,9 +311,11 @@ public class Cam extends Application {
 
     //Main
     private void choose_camera(javafx.event.ActionEvent actionEvent) {
+        System.out.println("choose_camera");
     }
 
     private void start_camera(javafx.event.ActionEvent actionEvent) {
+        System.out.println("start_camera");
     }
 
     public void second_window(ActionEvent actionEvent) {
@@ -360,10 +381,7 @@ public class Cam extends Application {
 
 
         //TODO: funkcjonalosc (save,discard,copy)
-        saveM.setOnAction(e -> {
-            System.out.println("Save Selected");
-//      save_shot();
-        });
+        saveM.setOnAction(this::save_shot);
 
         dcM.setOnAction(e-> {
             System.out.println("Discard Selected");
@@ -389,16 +407,22 @@ public class Cam extends Application {
 
         ledM.setOnAction(this::led);
 
-        docM.setOnAction(this::doc);
+        docM.setOnAction(this::documentationWindow);
 
         secondaryStage.show();
     }
 
     //TODO: Snapshot functions
-    public void save_shot(){}
+    public void save_shot(ActionEvent actionEvent){
+        System.out.println("save_shot");
+    }
 
-    public void discard_shot(){}
+    public void discard_shot(){
+        System.out.println("discard_shot");
+    }
 
-    public void copy_shot(){}
+    public void copy_shot(){
+        System.out.println("copy_shot");
+    }
 
 }
