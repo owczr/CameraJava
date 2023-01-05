@@ -55,7 +55,7 @@ public class Cam extends Application {
         primaryStage.setTitle("Camera");
 
         //Menu items
-        VBox vBox = createMenu();
+        VBox vBox = createMenu(false);
 
         //Buttons
         Button helpButton   = createButton("?", 0, 480);
@@ -179,15 +179,28 @@ public class Cam extends Application {
 //        g.drawImage(originalImage, 0, 0, newImageWidth , newImageHeight , null);
 //        g.dispose();
     }
-    private VBox createMenu(){
-        Menu menu1 = new Menu("Main");
-        MenuItem snapM = new MenuItem("Snapshot");
-        snapM.setOnAction(this::second_window);
-        MenuItem startM = new MenuItem("Start");
-        startM.setOnAction(this::start_camera);
-        MenuItem deviceM = new MenuItem("Device");
-        deviceM.setOnAction(this::choose_camera);
-        menu1.getItems().addAll(snapM,startM,deviceM);
+    private VBox createMenu(Boolean snapshot){
+        Menu menu1;
+        if(!snapshot) {
+            menu1 = new Menu("Main");
+            MenuItem snapM = new MenuItem("Snapshot");
+            snapM.setOnAction(this::second_window);
+            MenuItem startM = new MenuItem("Start");
+            startM.setOnAction(this::start_camera);
+            MenuItem deviceM = new MenuItem("Device");
+            deviceM.setOnAction(this::choose_camera);
+            menu1.getItems().addAll(snapM, startM, deviceM);
+        }
+        else{
+            menu1 = new Menu("File");
+            MenuItem saveM = new MenuItem("Save");
+            MenuItem dcM = new MenuItem("Discard");
+            MenuItem copyM = new MenuItem("Copy");
+            menu1.getItems().addAll(saveM,dcM,copyM);
+            saveM.setOnAction(this::save_shot);
+            dcM.setOnAction(this::discard_shot);
+            copyM.setOnAction(this::copy_shot);
+        }
 
         Menu menu2 = new Menu("Edit");
         Menu zoomM = new Menu("Zoom");
@@ -335,43 +348,7 @@ public class Cam extends Application {
         final Stage secondaryStage = new Stage();
         secondaryStage.setTitle("Snapshot");
 
-        Menu menu1 = new Menu("File");
-        MenuItem saveM = new MenuItem("Save");
-        MenuItem dcM = new MenuItem("Discard");
-        MenuItem copyM = new MenuItem("Copy");
-        menu1.getItems().addAll(saveM,dcM,copyM);
-
-        Menu menu2 = new Menu("Edit");
-        Menu zoomM = new Menu("Zoom");
-        Menu moveM = new Menu("Move");
-        menu2.getItems().addAll(zoomM,moveM);
-
-        MenuItem zoomMI = new MenuItem("Zoom in");
-        MenuItem zoomMO = new MenuItem("Zoom out");
-        zoomM.getItems().addAll(zoomMI,zoomMO);
-
-        MenuItem moveU = new MenuItem("Move up");
-        MenuItem moveD = new MenuItem("Move down");
-        MenuItem moveL = new MenuItem("Move left");
-        MenuItem moveR = new MenuItem("Move right");
-        moveM.getItems().addAll(moveU,moveD,moveL,moveR);
-
-        Menu menu3 = new Menu("Filters");
-        CheckMenuItem filter1 = new CheckMenuItem("Black&white");
-        CheckMenuItem filter2 = new CheckMenuItem("Negative");
-        menu3.getItems().addAll(filter1,filter2);
-
-        Menu menu4 = new Menu("Tools");
-        CheckMenuItem ledM = new CheckMenuItem("LED");
-        menu4.getItems().addAll(ledM);
-
-        Menu menu5 = new Menu("Help");
-        MenuItem docM = new MenuItem("Documentation");
-        menu5.getItems().addAll(docM);
-
-        MenuBar menuBar = new MenuBar();
-        menuBar.getMenus().addAll(menu1,menu2,menu3,menu4,menu5);
-        VBox vBox = new VBox(menuBar);
+        VBox vBox = createMenu(true);
 
         Group root2 = new Group();
         root2.getChildren().add(imageView2);
@@ -379,35 +356,21 @@ public class Cam extends Application {
         Scene scene2 = new Scene(root2, FRAME_WIDTH, FRAME_HEIGHT);
         secondaryStage.setScene(scene2);
 
-
-        //TODO: funkcjonalosc (save,discard,copy)
-        saveM.setOnAction(this::save_shot);
-
-        dcM.setOnAction(e-> {
-            System.out.println("Discard Selected");
-//      discard_shot();
-        });
-
-        copyM.setOnAction(e-> {
-            System.out.println("Copy Selected");
-//      copy_shot();
-        });
-
         //TODO: przekopiowane setOnAction (menu2-menu5)
-        zoomMI.setOnAction(this::zoom_in);
-        zoomMO.setOnAction(this::zoom_out);
-
-        moveD.setOnAction(this::move_down);
-        moveU.setOnAction(this::move_up);
-        moveL.setOnAction(this::move_left);
-        moveR.setOnAction(this::move_right);
-
-        filter1.setOnAction(this::filter1);
-        filter2.setOnAction(this::filter2);
-
-        ledM.setOnAction(this::led);
-
-        docM.setOnAction(this::documentationWindow);
+//        zoomMI.setOnAction(this::zoom_in);
+//        zoomMO.setOnAction(this::zoom_out);
+//
+//        moveD.setOnAction(this::move_down);
+//        moveU.setOnAction(this::move_up);
+//        moveL.setOnAction(this::move_left);
+//        moveR.setOnAction(this::move_right);
+//
+//        filter1.setOnAction(this::filter1);
+//        filter2.setOnAction(this::filter2);
+//
+//        ledM.setOnAction(this::led);
+//
+//        docM.setOnAction(this::documentationWindow);
 
         secondaryStage.show();
     }
@@ -417,11 +380,11 @@ public class Cam extends Application {
         System.out.println("save_shot");
     }
 
-    public void discard_shot(){
+    public void discard_shot(ActionEvent actionEvent){
         System.out.println("discard_shot");
     }
 
-    public void copy_shot(){
+    public void copy_shot(ActionEvent actionEvent){
         System.out.println("copy_shot");
     }
 
