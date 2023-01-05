@@ -1,6 +1,5 @@
 package cam;
 
-import java.awt.event.ActionEvent;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -12,6 +11,7 @@ import java.nio.file.Paths;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -115,8 +115,6 @@ public class Cam extends Application {
     }
 
     public void documentationWindow(javafx.event.ActionEvent actionEvent) {
-        //Passing FileInputStream object as a parameter
-        //TODO: Change Image to microscope output
         final Stage secondaryStage = new Stage();
 
         FileInputStream inputstream;
@@ -262,4 +260,145 @@ public class Cam extends Application {
         slider.setLayoutY(y);
         return slider;
     }
+
+    private void led(javafx.event.ActionEvent actionEvent) {
+    }
+    //Help - doc
+    private void doc(javafx.event.ActionEvent actionEvent) {
+    }
+
+    //Filters
+    private void filter2(javafx.event.ActionEvent actionEvent) {
+    }
+    private void filter1(javafx.event.ActionEvent actionEvent) {
+    }
+
+    //Edit - move
+    private void move_down(javafx.event.ActionEvent actionEvent) {
+    }
+    private void move_up(javafx.event.ActionEvent actionEvent) {
+    }
+    private void move_left(javafx.event.ActionEvent actionEvent) {
+    }
+    private void move_right(javafx.event.ActionEvent actionEvent) {
+    }
+    //Edit - zoom
+    public void zoom_in(javafx.event.ActionEvent actionEvent){
+        System.out.println("Zoom In Selected");
+    }
+    private void zoom_out(javafx.event.ActionEvent actionEvent) {
+        System.out.println("Zoom Out Selected");
+    }
+
+    //Main
+    private void choose_camera(javafx.event.ActionEvent actionEvent) {
+    }
+
+    private void start_camera(javafx.event.ActionEvent actionEvent) {
+    }
+
+    public void second_window(ActionEvent actionEvent) {
+        FileInputStream inputstream;
+        try {
+            inputstream = new FileInputStream("example.jpg");
+        } catch(FileNotFoundException e) {
+            e.printStackTrace();
+            return;
+        }
+        Image image = new Image(inputstream);
+
+        //Setting image view
+        ImageView imageView2 = new ImageView(image);
+
+
+        final Stage secondaryStage = new Stage();
+        secondaryStage.setTitle("Snapshot");
+
+        Menu menu1 = new Menu("File");
+        MenuItem saveM = new MenuItem("Save");
+        MenuItem dcM = new MenuItem("Discard");
+        MenuItem copyM = new MenuItem("Copy");
+        menu1.getItems().addAll(saveM,dcM,copyM);
+
+        Menu menu2 = new Menu("Edit");
+        Menu zoomM = new Menu("Zoom");
+        Menu moveM = new Menu("Move");
+        menu2.getItems().addAll(zoomM,moveM);
+
+        MenuItem zoomMI = new MenuItem("Zoom in");
+        MenuItem zoomMO = new MenuItem("Zoom out");
+        zoomM.getItems().addAll(zoomMI,zoomMO);
+
+        MenuItem moveU = new MenuItem("Move up");
+        MenuItem moveD = new MenuItem("Move down");
+        MenuItem moveL = new MenuItem("Move left");
+        MenuItem moveR = new MenuItem("Move right");
+        moveM.getItems().addAll(moveU,moveD,moveL,moveR);
+
+        Menu menu3 = new Menu("Filters");
+        CheckMenuItem filter1 = new CheckMenuItem("Black&white");
+        CheckMenuItem filter2 = new CheckMenuItem("Negative");
+        menu3.getItems().addAll(filter1,filter2);
+
+        Menu menu4 = new Menu("Tools");
+        CheckMenuItem ledM = new CheckMenuItem("LED");
+        menu4.getItems().addAll(ledM);
+
+        Menu menu5 = new Menu("Help");
+        MenuItem docM = new MenuItem("Documentation");
+        menu5.getItems().addAll(docM);
+
+        MenuBar menuBar = new MenuBar();
+        menuBar.getMenus().addAll(menu1,menu2,menu3,menu4,menu5);
+        VBox vBox = new VBox(menuBar);
+
+        Group root2 = new Group();
+        root2.getChildren().add(imageView2);
+        root2.getChildren().add(vBox);
+        Scene scene2 = new Scene(root2, FRAME_WIDTH, FRAME_HEIGHT);
+        secondaryStage.setScene(scene2);
+
+
+        //TODO: funkcjonalosc (save,discard,copy)
+        saveM.setOnAction(e -> {
+            System.out.println("Save Selected");
+//      save_shot();
+        });
+
+        dcM.setOnAction(e-> {
+            System.out.println("Discard Selected");
+//      discard_shot();
+        });
+
+        copyM.setOnAction(e-> {
+            System.out.println("Copy Selected");
+//      copy_shot();
+        });
+
+        //TODO: przekopiowane setOnAction (menu2-menu5)
+        zoomMI.setOnAction(this::zoom_in);
+        zoomMO.setOnAction(this::zoom_out);
+
+        moveD.setOnAction(this::move_down);
+        moveU.setOnAction(this::move_up);
+        moveL.setOnAction(this::move_left);
+        moveR.setOnAction(this::move_right);
+
+        filter1.setOnAction(this::filter1);
+        filter2.setOnAction(this::filter2);
+
+        ledM.setOnAction(this::led);
+
+        docM.setOnAction(this::doc);
+
+        secondaryStage.show();
+    }
+
+    //TODO: Snapshot functions
+    public void save_shot(){}
+
+    public void discard_shot(){}
+
+    public void copy_shot(){}
+
 }
