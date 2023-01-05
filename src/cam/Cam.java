@@ -70,8 +70,13 @@ public class Cam extends Application {
         Button rotateLeftButton     = createButton("Rotate Left", 100, 580);
         Button rotateRightButton    = createButton("Rotate Right", 150, 580);
         Button snapButton   = createButton("Snap", 300, 690);
+        Button applyButton   = createButton("Apply", 0, 660);
 
-        //Set actions
+        //Dropdown combo box
+        Text filtersText = createText("Filters", 0, 630);
+        ComboBox filtersBox = createFiltersList();
+
+        //Set button actions
         helpButton.setOnAction(this::documentationWindow);
         rejectButton.setOnAction(this::discard_shot);
         saveButton.setOnAction(this::save_shot);
@@ -84,10 +89,10 @@ public class Cam extends Application {
         rotateLeftButton.setOnAction(this::rotateLeft);
         rotateRightButton.setOnAction(this::rotateRight);
         snapButton.setOnAction(this::second_window);
+        applyButton.setOnAction(e -> {
+            filtersListAction(filtersBox.getValue().toString());
+        });
 
-        //Dropdown combo box
-        Text filtersText = createText("Filters", 0, 630);
-        ComboBox filtersBox = createFiltersList();
 
         //Sliders
         Text contrastText = createText("Contrast", 400, 530);
@@ -104,7 +109,8 @@ public class Cam extends Application {
         Group root = new Group();
         root.getChildren().addAll(canvas, vBox, helpButton, rejectButton, saveButton, upButton, downButton, leftButton,
                 rightButton, inButton, outButton, rotateRightButton, rotateLeftButton, filtersBox, filtersText,
-                contrastSlider, contrastText, brightnessSlider, brightnessText, ledText, ledSlider, snapButton);
+                contrastSlider, contrastText, brightnessSlider, brightnessText, ledText, ledSlider, snapButton,
+                applyButton);
 
 
         timeline = new Timeline(new KeyFrame(Duration.millis(130), e -> {
@@ -186,14 +192,7 @@ public class Cam extends Application {
         buffer = image;
         pixelWriter.setPixels(0, 25, FRAME_WIDTH, FRAME_HEIGHT, pixelFormat, buffer, 0, FRAME_WIDTH * 3);
     }
-    private void zoomInImage(){
-//        int newImageWidth = imageWidth * zoomLevel;
-//        int newImageHeight = imageHeight * zoomLevel;
-//        BufferedImage resizedImage = new BufferedImage(newImageWidth , newImageHeight, imageType);
-//        Graphics2D g = resizedImage.createGraphics();
-//        g.drawImage(originalImage, 0, 0, newImageWidth , newImageHeight , null);
-//        g.dispose();
-    }
+
     private VBox createMenu(Boolean snapshot){
         Menu menu1;
         if(!snapshot) {
@@ -240,9 +239,9 @@ public class Cam extends Application {
 
         Menu menu3 = new Menu("Filters");
         CheckMenuItem filter1 = new CheckMenuItem("Black&white");
-        filter1.setOnAction(this::filter1);
+        filter1.setOnAction(e -> {filter1();});
         CheckMenuItem filter2 = new CheckMenuItem("Negative");
-        filter2.setOnAction(this::filter2);
+        filter2.setOnAction(e -> {filter2();});
         menu3.getItems().addAll(filter1,filter2);
 
         Menu menu4 = new Menu("Tools");
@@ -277,17 +276,27 @@ public class Cam extends Application {
         return text;
     }
     private ComboBox createFiltersList(){
-
         ObservableList<String> filtersList =
                 FXCollections.observableArrayList(
-                        "Filter 1",
-                        "Filter 2",
-                        "Filter 3"
+                        "Black&white",
+                        "Negative"
                 );
         final ComboBox filtersBox = new ComboBox(filtersList);
         filtersBox.setLayoutX(50);
         filtersBox.setLayoutY(630);
         return filtersBox;
+    }
+    private void filtersListAction(String listItem) {
+        switch (listItem) {
+            case "Black&white":
+                filter1();
+                break;
+            case "Negative":
+                filter2();
+                break;
+            default:
+                break;
+        }
     }
     private Slider createSlider(int x, int y){
         Slider slider = new Slider();
@@ -309,10 +318,10 @@ public class Cam extends Application {
     }
 
     //Filters
-    private void filter2(javafx.event.ActionEvent actionEvent) {
+    private void filter2() {
         System.out.println("filter2");
     }
-    private void filter1(javafx.event.ActionEvent actionEvent) {
+    private void filter1() {
         System.out.println("filter1");
     }
 
@@ -332,6 +341,12 @@ public class Cam extends Application {
     //Edit - zoom
     public void zoom_in(javafx.event.ActionEvent actionEvent){
         System.out.println("Zoom In Selected");
+        //        int newImageWidth = imageWidth * zoomLevel;
+//        int newImageHeight = imageHeight * zoomLevel;
+//        BufferedImage resizedImage = new BufferedImage(newImageWidth , newImageHeight, imageType);
+//        Graphics2D g = resizedImage.createGraphics();
+//        g.drawImage(originalImage, 0, 0, newImageWidth , newImageHeight , null);
+//        g.dispose();
     }
     private void zoom_out(javafx.event.ActionEvent actionEvent) {
         System.out.println("Zoom Out Selected");
