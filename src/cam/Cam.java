@@ -1,5 +1,10 @@
 package cam;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.awt.image.Raster;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -15,15 +20,24 @@ import javafx.event.ActionEvent;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.*;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
+
+import javax.imageio.ImageIO;
+
+import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 
 public class Cam extends Application {
     private static final int FRAME_WIDTH = 640;
@@ -33,6 +47,8 @@ public class Cam extends Application {
     byte[] buffer;
     PixelWriter pixelWriter;
     PixelFormat<ByteBuffer> pixelFormat;
+
+    int ZOOM = 1;
 
     //Frames frames;
 
@@ -190,6 +206,29 @@ public class Cam extends Application {
         byte[] image = Files.readAllBytes(path);
 
         buffer = image;
+
+        BufferedImage originalImage = new BufferedImage(FRAME_WIDTH, FRAME_HEIGHT, TYPE_INT_RGB);
+        originalImage.setData(Raster.createRaster(originalImage.getSampleModel(),
+                new DataBufferByte(buffer, buffer.length), new Point() ) );
+
+        int newImageWidth = FRAME_WIDTH * ZOOM;
+        int newImageHeight = FRAME_HEIGHT * ZOOM;
+
+        BufferedImage resizedImage = new BufferedImage(newImageWidth , newImageHeight, 	TYPE_INT_RGB);
+        Graphics2D g = resizedImage.createGraphics();
+        g.drawImage(originalImage, 0, 0, newImageWidth , newImageHeight , null);
+        g.dispose();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            ImageIO.write(resizedImage, "jpg", baos);
+        }
+        catch (java.io.IOException e){
+            e.printStackTrace();
+            return;
+        }
+        buffer = baos.toByteArray();
+
         pixelWriter.setPixels(0, 25, FRAME_WIDTH, FRAME_HEIGHT, pixelFormat, buffer, 0, FRAME_WIDTH * 3);
     }
 
@@ -340,13 +379,36 @@ public class Cam extends Application {
     }
     //Edit - zoom
     public void zoom_in(javafx.event.ActionEvent actionEvent){
+        ZOOM += 1;
+
         System.out.println("Zoom In Selected");
+        BufferedImage originalImage = new BufferedImage(FRAME_WIDTH, FRAME_HEIGHT, BufferedImage.TYPE_INT_RGB);
+        originalImage.setData(Raster.createRaster(originalImage.getSampleModel(), new DataBufferByte(buffer, buffer.length), new Point() ) );
+
+        int newImageWidth = FRAME_WIDTH * 2;
+        int newImageHeight = FRAME_HEIGHT * 2;
+
+        BufferedImage resizedImage = new BufferedImage(newImageWidth , newImageHeight, 	TYPE_INT_RGB);
+        Graphics2D g = resizedImage.createGraphics();
+        g.drawImage(originalImage, 0, 0, newImageWidth , newImageHeight , null);
+        g.dispose();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            ImageIO.write(resizedImage, "rgb", baos);
+        }
+        catch (java.io.IOException e){
+            e.printStackTrace();
+            return;
+        }
+        buffer = baos.toByteArray();
+
         //        int newImageWidth = imageWidth * zoomLevel;
 //        int newImageHeight = imageHeight * zoomLevel;
 //        BufferedImage resizedImage = new BufferedImage(newImageWidth , newImageHeight, imageType);
 //        Graphics2D g = resizedImage.createGraphics();
-//        g.drawImage(originalImage, 0, 0, newImageWidth , newImageHeight , null);
-//        g.dispose();
+//
+//
     }
     private void zoom_out(javafx.event.ActionEvent actionEvent) {
         System.out.println("Zoom Out Selected");
