@@ -72,11 +72,10 @@ public class Cam extends Application {
         Button snapButton   = createButton("Snap", 300, 690);
 
         //Set actions
-//        inButton.setOnAction(e -> {
-//            System.out.println("1");
-//        });
-//        helpButton.setOnAction(this::documentationWindow(primaryStage)
-//        );
+        inButton.setOnAction(e -> {
+            System.out.println("1");
+        });
+        helpButton.setOnAction(this::documentationWindow);
         //Dropdown combo box
         Text filtersText = createText("Filters", 0, 630);
         ComboBox filtersBox = createFiltersList();
@@ -113,6 +112,51 @@ public class Cam extends Application {
         Scene scene = new Scene(root,640, 720);
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    public void documentationWindow(javafx.event.ActionEvent actionEvent) {
+        //Passing FileInputStream object as a parameter
+        //TODO: Change Image to microscope output
+        final Stage secondaryStage = new Stage();
+
+        FileInputStream inputstream;
+        try {
+            inputstream = new FileInputStream("example.jpg");
+        } catch(FileNotFoundException e) {
+            e.printStackTrace();
+            return;
+        }
+        Image image = new Image(inputstream);
+
+        //Setting image view
+        ImageView imageView = new ImageView(image);
+
+        //Setting the position of the image
+        imageView.setX(0);
+        imageView.setY(26);
+
+        //setting the fit height and width of the image view
+        imageView.setFitHeight(480);
+        imageView.setFitWidth(640);
+
+        //Setting the preserve ratio of the image view
+        imageView.setPreserveRatio(true);
+
+        //Text
+        Text text = createText("Welcome to documentation!", 10, 10);
+
+        //Group
+        Group root = new Group();
+        root.getChildren().addAll(text);
+
+        //Scene
+        Scene scene = new Scene(root, 640, 720);
+
+        //Stage
+        secondaryStage.setTitle("Help");
+
+        secondaryStage.setScene(scene);
+        secondaryStage.show();
     }
 
     private void disp_frame() throws IOException {
@@ -217,42 +261,5 @@ public class Cam extends Application {
         slider.setLayoutX(x);
         slider.setLayoutY(y);
         return slider;
-    }
-    public void documentationWindow(ActionEvent actionEvent) {
-        //Passing FileInputStream object as a parameter
-        //TODO: Change Image to microscope output
-
-        FileInputStream inputstream;
-        try {
-            inputstream = new FileInputStream("example.jpg");
-        } catch(FileNotFoundException e) {
-            e.printStackTrace();
-            return;
-        }
-        Image image = new Image(inputstream);
-
-        //Setting image view
-        ImageView imageView = new ImageView(image);
-
-        //Setting the position of the image
-        imageView.setX(0);
-        imageView.setY(26);
-
-        //setting the fit height and width of the image view
-        imageView.setFitHeight(480);
-        imageView.setFitWidth(640);
-
-        //Setting the preserve ratio of the image view
-        imageView.setPreserveRatio(true);
-        
-        //Scene
-        Scene scene = new Scene(root, 640, 720);
-
-        //Stage
-        Stage stage = primaryStage;
-        primaryStage.setTitle("JavaFX App");
-
-        primaryStage.setScene(scene);
-        primaryStage.show();
     }
 }
