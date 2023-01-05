@@ -1,5 +1,6 @@
 package cam;
 
+import java.awt.event.ActionEvent;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -217,7 +218,7 @@ public class Cam extends Application {
         slider.setLayoutY(y);
         return slider;
     }
-    public void documentationWindow(Stage primaryStage) {
+    public void documentationWindow(ActionEvent actionEvent) {
         //Passing FileInputStream object as a parameter
         //TODO: Change Image to microscope output
 
