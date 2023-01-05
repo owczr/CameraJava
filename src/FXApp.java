@@ -243,7 +243,22 @@ public class JavaFXApp extends Application implements ChangeListener<P_move>
    //Filters
    private void filter2(ActionEvent actionEvent) {
    }
-   private void filter1(ActionEvent actionEvent) {
+   
+   //black&white filter for snapshot
+   boolean filter1Pressed = false;
+   private void filter1(ActionEvent actionEvent)
+   {
+     filter1Pressed = !filter1Pressed;
+     ColorAdjust colorAdjust = new ColorAdjust();
+     if(filter1Pressed) {
+       colorAdjust.setContrast(-0.1);
+       colorAdjust.setHue(-0.05);
+       colorAdjust.setBrightness(0.15);
+       colorAdjust.setSaturation(-1);
+     } else {
+       colorAdjust = new ColorAdjust(0,0,0,0);
+     }
+     imageView2.setEffect(colorAdjust);
    }
 
   //Edit - move
