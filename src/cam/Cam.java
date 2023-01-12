@@ -49,6 +49,8 @@ public class Cam extends Application {
     PixelFormat<ByteBuffer> pixelFormat;
 
     int ZOOM = 1;
+    int X = 0;
+    int Y = 0;
 
     //Frames frames;
 
@@ -219,7 +221,7 @@ public class Cam extends Application {
 
         BufferedImage resizedImage = new BufferedImage(newImageWidth , newImageHeight, 	TYPE_INT_RGB);
         Graphics2D g = resizedImage.createGraphics();
-        g.drawImage(originalImage, 0, 0, newImageWidth , newImageHeight , null);
+        g.drawImage(originalImage, X, Y, newImageWidth , newImageHeight , null);
         g.dispose();
 
         Image image = SwingFXUtils.toFXImage(resizedImage, null);
@@ -394,15 +396,19 @@ public class Cam extends Application {
     //Edit - move
     private void move_down(javafx.event.ActionEvent actionEvent) {
         System.out.println("move_down");
+        Y += 1;
     }
     private void move_up(javafx.event.ActionEvent actionEvent) {
         System.out.println("move_up");
+        Y -= 1;
     }
     private void move_left(javafx.event.ActionEvent actionEvent) {
         System.out.println("move_left");
+        X -= 1;
     }
     private void move_right(javafx.event.ActionEvent actionEvent) {
         System.out.println("move_right");
+        X += 1;
     }
     //Edit - zoom
     public void zoom_in(javafx.event.ActionEvent actionEvent){
