@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -128,10 +129,9 @@ public class Cam extends Application {
                 contrastSlider, contrastText, brightnessSlider, brightnessText, ledText, ledSlider, snapButton,
                 applyButton);
 
-
         timeline = new Timeline(new KeyFrame(Duration.millis(130), e -> {
             try {
-                disp_frame();
+                disp_frame(primaryStage);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -200,16 +200,18 @@ public class Cam extends Application {
         pixelWriter = gc.getPixelWriter();
         pixelFormat = PixelFormat.getByteRgbInstance();
 
-        //buffer = frames.get_frame();
-        Path path = Paths.get("example.rgb");
+        // buffer = frames.get_frame();
+        Path path = Paths.get("example.png");
 
-        byte[] image = Files.readAllBytes(path);
+        byte[] byteImage = Files.readAllBytes(path);
 
-        buffer = image;
+        buffer = byteImage;
+        System.out.println(buffer.length);
 
         BufferedImage originalImage = new BufferedImage(FRAME_WIDTH, FRAME_HEIGHT, TYPE_INT_RGB);
         originalImage.setData(Raster.createRaster(originalImage.getSampleModel(),
                 new DataBufferByte(buffer, buffer.length), new Point() ) );
+
 
         int newImageWidth = FRAME_WIDTH * ZOOM;
         int newImageHeight = FRAME_HEIGHT * ZOOM;
@@ -221,17 +223,38 @@ public class Cam extends Application {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            ImageIO.write(resizedImage, "jpg", baos);
+            ImageIO.write(resizedImage, "png", baos);
         }
         catch (java.io.IOException e){
             e.printStackTrace();
             return;
         }
+//        Image image = SwingFXUtils.toFXImage(originalImage, null);
+//        ImageView imageView = new ImageView();
+//        imageView.setImage(image);
         buffer = baos.toByteArray();
 
         pixelWriter.setPixels(0, 25, FRAME_WIDTH, FRAME_HEIGHT, pixelFormat, buffer, 0, FRAME_WIDTH * 3);
-    }
 
+        }
+//private void disp_frame(Stage stage) throws IOException {
+//    pixelWriter = gc.getPixelWriter();
+//    pixelFormat = PixelFormat.getByteRgbInstance();
+//
+//    // buffer = frames.get_frame();
+//
+//    Image image = new Image("C:\\Users\\codete\\Studies\\mikroskop_java\\example.png");
+//
+//    ImageView imageView = new ImageView();
+//    imageView.setImage(image);
+//
+//    Group root = new Group();
+//    root.getChildren().add(imageView);
+//
+//    Scene scene = new Scene(root,640, 720);
+//    stage.setScene(scene);
+//    stage.show();
+//    }
     private VBox createMenu(Boolean snapshot){
         Menu menu1;
         if(!snapshot) {
