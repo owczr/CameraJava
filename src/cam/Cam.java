@@ -1,4 +1,4 @@
-package cam;
+package src.cam;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -131,7 +131,7 @@ public class Cam extends Application {
 
         timeline = new Timeline(new KeyFrame(Duration.millis(130), e -> {
             try {
-                disp_frame(primaryStage);
+                disp_frame(primaryStage, root);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -144,6 +144,8 @@ public class Cam extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+
+
 
     private void rotateRight(ActionEvent actionEvent) {
         System.out.println("rotateRight");
@@ -196,12 +198,12 @@ public class Cam extends Application {
         secondaryStage.show();
     }
 
-    private void disp_frame() throws IOException {
+    private void disp_frame(Stage primaryStage, Group root) throws IOException {
         pixelWriter = gc.getPixelWriter();
         pixelFormat = PixelFormat.getByteRgbInstance();
 
         // buffer = frames.get_frame();
-        Path path = Paths.get("example.png");
+        Path path = Paths.get("example.rgb");
 
         byte[] byteImage = Files.readAllBytes(path);
 
@@ -209,8 +211,14 @@ public class Cam extends Application {
         System.out.println(buffer.length);
 
         BufferedImage originalImage = new BufferedImage(FRAME_WIDTH, FRAME_HEIGHT, TYPE_INT_RGB);
+//        for (int i = 0; i < FRAME_WIDTH; i++) {
+//            for (int j = 0; j < FRAME_HEIGHT; j++) {
+//                originalImage.setRGB(i, j, buffer[i + j]);
+//            }
+//        }
         originalImage.setData(Raster.createRaster(originalImage.getSampleModel(),
                 new DataBufferByte(buffer, buffer.length), new Point() ) );
+        // FIXME: Fill array with RGB
 
 
         int newImageWidth = FRAME_WIDTH * ZOOM;
@@ -222,19 +230,21 @@ public class Cam extends Application {
         g.dispose();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
-            ImageIO.write(resizedImage, "png", baos);
-        }
-        catch (java.io.IOException e){
-            e.printStackTrace();
-            return;
-        }
-//        Image image = SwingFXUtils.toFXImage(originalImage, null);
-//        ImageView imageView = new ImageView();
-//        imageView.setImage(image);
-        buffer = baos.toByteArray();
+//        try {
+//            ImageIO.write(originalImage, "png", baos);
+//        }
+//        catch (java.io.IOException e){
+//            e.printStackTrace();
+//            return;
+//        }
+        Image image = SwingFXUtils.toFXImage(originalImage, null);
+        ImageView imageView = new ImageView();
+        imageView.setImage(image);
+        root.getChildren().add(imageView);
 
-        pixelWriter.setPixels(0, 25, FRAME_WIDTH, FRAME_HEIGHT, pixelFormat, buffer, 0, FRAME_WIDTH * 3);
+//        byte[] bufferNew = baos.toByteArray();
+//
+//        pixelWriter.setPixels(0, 25, FRAME_WIDTH, FRAME_HEIGHT, pixelFormat, bufferNew, 0, FRAME_WIDTH * 3);
 
         }
 //private void disp_frame(Stage stage) throws IOException {
