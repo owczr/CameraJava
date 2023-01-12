@@ -207,21 +207,12 @@ public class Cam extends Application {
         byte[] byteImage = Files.readAllBytes(path);
 
         buffer = byteImage;
-        System.out.println(buffer.length);
 
-        // BufferedImage originalImage = new BufferedImage(FRAME_WIDTH, FRAME_HEIGHT, BufferedImage.TYPE_3BYTE_BGR);
-//        for (int i = 0; i < FRAME_WIDTH; i++) {
-//            for (int j = 0; j < FRAME_HEIGHT; j++) {
-//                originalImage.setRGB(i, j, buffer[i + j] << 4 * (i % 3));
-//            }
-//        }
         BufferedImage originalImage = create3ByteRGBImage(FRAME_WIDTH, FRAME_HEIGHT, new int[] {8, 8, 8},
                 new int[] {0, 1, 2});
 
         originalImage.setData(Raster.createRaster(originalImage.getSampleModel(),
                 new DataBufferByte(buffer, buffer.length), new Point() ) );
-        // FIXME: Fill array with RGB
-
 
         int newImageWidth = FRAME_WIDTH * ZOOM;
         int newImageHeight = FRAME_HEIGHT * ZOOM;
@@ -231,23 +222,10 @@ public class Cam extends Application {
         g.drawImage(originalImage, 0, 0, newImageWidth , newImageHeight , null);
         g.dispose();
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//        try {
-//            ImageIO.write(originalImage, "png", baos);
-//        }
-//        catch (java.io.IOException e){
-//            e.printStackTrace();
-//            return;
-//        }
-        Image image = SwingFXUtils.toFXImage(originalImage, null);
+        Image image = SwingFXUtils.toFXImage(resizedImage, null);
         ImageView imageView = new ImageView();
         imageView.setImage(image);
         root.getChildren().add(imageView);
-
-//        byte[] bufferNew = baos.toByteArray();
-//
-//        pixelWriter.setPixels(0, 25, FRAME_WIDTH, FRAME_HEIGHT, pixelFormat, bufferNew, 0, FRAME_WIDTH * 3);
-
         }
     private BufferedImage create3ByteRGBImage(int width, int height, int[] nBits, int[] bOffs) {
         ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_sRGB);

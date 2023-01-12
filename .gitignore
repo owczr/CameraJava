@@ -1,4 +1,8 @@
-/example.jpg
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.rgb
 
 /aaa
 
