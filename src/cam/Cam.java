@@ -1,9 +1,8 @@
 package src.cam;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.awt.image.Raster;
+import java.awt.color.ColorSpace;
+import java.awt.image.*;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -210,12 +209,15 @@ public class Cam extends Application {
         buffer = byteImage;
         System.out.println(buffer.length);
 
-        BufferedImage originalImage = new BufferedImage(FRAME_WIDTH, FRAME_HEIGHT, TYPE_INT_RGB);
+        // BufferedImage originalImage = new BufferedImage(FRAME_WIDTH, FRAME_HEIGHT, BufferedImage.TYPE_3BYTE_BGR);
 //        for (int i = 0; i < FRAME_WIDTH; i++) {
 //            for (int j = 0; j < FRAME_HEIGHT; j++) {
-//                originalImage.setRGB(i, j, buffer[i + j]);
+//                originalImage.setRGB(i, j, buffer[i + j] << 4 * (i % 3));
 //            }
 //        }
+        BufferedImage originalImage = create3ByteRGBImage(FRAME_WIDTH, FRAME_HEIGHT, new int[] {8, 8, 8},
+                new int[] {0, 1, 2});
+
         originalImage.setData(Raster.createRaster(originalImage.getSampleModel(),
                 new DataBufferByte(buffer, buffer.length), new Point() ) );
         // FIXME: Fill array with RGB
@@ -247,6 +249,20 @@ public class Cam extends Application {
 //        pixelWriter.setPixels(0, 25, FRAME_WIDTH, FRAME_HEIGHT, pixelFormat, bufferNew, 0, FRAME_WIDTH * 3);
 
         }
+    private BufferedImage create3ByteRGBImage(int width, int height, int[] nBits, int[] bOffs) {
+        ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_sRGB);
+        ColorModel colorModel =
+                new ComponentColorModel(cs, nBits,
+                        false, false,
+                        Transparency.OPAQUE,
+                        DataBuffer.TYPE_BYTE);
+        WritableRaster raster =
+                Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE,
+                        width, height,
+                        width*3, 3,
+                        bOffs, null);
+        return new BufferedImage(colorModel, raster, false, null);
+    }
 //private void disp_frame(Stage stage) throws IOException {
 //    pixelWriter = gc.getPixelWriter();
 //    pixelFormat = PixelFormat.getByteRgbInstance();
