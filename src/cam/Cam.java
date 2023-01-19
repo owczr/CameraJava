@@ -48,7 +48,7 @@ public class Cam extends Application {
     PixelWriter pixelWriter;
     PixelFormat<ByteBuffer> pixelFormat;
 
-    int ZOOM = 1;
+    double ZOOM = 1;
     int X = 0;
     int Y = 0;
 
@@ -216,15 +216,17 @@ public class Cam extends Application {
         originalImage.setData(Raster.createRaster(originalImage.getSampleModel(),
                 new DataBufferByte(buffer, buffer.length), new Point() ) );
 
-        int newImageWidth = FRAME_WIDTH * ZOOM;
-        int newImageHeight = FRAME_HEIGHT * ZOOM;
+        int newImageWidth = (int)(FRAME_WIDTH * ZOOM);
+        int newImageHeight = (int)(FRAME_HEIGHT * ZOOM);
 
         BufferedImage resizedImage = new BufferedImage(newImageWidth , newImageHeight, 	TYPE_INT_RGB);
-        Graphics2D g = resizedImage.createGraphics();
+        BufferedImage croppedImage = resizedImage.getSubimage(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
+
+        Graphics2D g = croppedImage.createGraphics();
         g.drawImage(originalImage, X, Y, newImageWidth , newImageHeight , null);
         g.dispose();
 
-        Image image = SwingFXUtils.toFXImage(resizedImage, null);
+        Image image = SwingFXUtils.toFXImage(croppedImage, null);
         ImageView imageView = new ImageView();
         imageView.setImage(image);
         root.getChildren().add(imageView);
@@ -412,29 +414,28 @@ public class Cam extends Application {
     }
     //Edit - zoom
     public void zoom_in(javafx.event.ActionEvent actionEvent){
-        ZOOM += 1;
-
+        ZOOM += 0.1;
         System.out.println("Zoom In Selected");
-        BufferedImage originalImage = new BufferedImage(FRAME_WIDTH, FRAME_HEIGHT, BufferedImage.TYPE_INT_RGB);
-        originalImage.setData(Raster.createRaster(originalImage.getSampleModel(), new DataBufferByte(buffer, buffer.length), new Point() ) );
-
-        int newImageWidth = FRAME_WIDTH * 2;
-        int newImageHeight = FRAME_HEIGHT * 2;
-
-        BufferedImage resizedImage = new BufferedImage(newImageWidth , newImageHeight, 	TYPE_INT_RGB);
-        Graphics2D g = resizedImage.createGraphics();
-        g.drawImage(originalImage, 0, 0, newImageWidth , newImageHeight , null);
-        g.dispose();
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
-            ImageIO.write(resizedImage, "rgb", baos);
-        }
-        catch (java.io.IOException e){
-            e.printStackTrace();
-            return;
-        }
-        buffer = baos.toByteArray();
+//        BufferedImage originalImage = new BufferedImage(FRAME_WIDTH, FRAME_HEIGHT, BufferedImage.TYPE_INT_RGB);
+//        originalImage.setData(Raster.createRaster(originalImage.getSampleModel(), new DataBufferByte(buffer, buffer.length), new Point() ) );
+//
+//        int newImageWidth = FRAME_WIDTH * 2;
+//        int newImageHeight = FRAME_HEIGHT * 2;
+//
+//        BufferedImage resizedImage = new BufferedImage(newImageWidth , newImageHeight, 	TYPE_INT_RGB);
+//        Graphics2D g = resizedImage.createGraphics();
+//        g.drawImage(originalImage, 0, 0, newImageWidth , newImageHeight , null);
+//        g.dispose();
+//
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        try {
+//            ImageIO.write(resizedImage, "rgb", baos);
+//        }
+//        catch (java.io.IOException e){
+//            e.printStackTrace();
+//            return;
+//        }
+//        buffer = baos.toByteArray();
 
         //        int newImageWidth = imageWidth * zoomLevel;
 //        int newImageHeight = imageHeight * zoomLevel;
@@ -445,6 +446,7 @@ public class Cam extends Application {
     }
     private void zoom_out(javafx.event.ActionEvent actionEvent) {
         System.out.println("Zoom Out Selected");
+        ZOOM -= 0.1;
     }
 
     //Main
