@@ -2,6 +2,7 @@ package src.cam;
 
 import java.awt.*;
 import java.awt.color.ColorSpace;
+import java.awt.geom.AffineTransform;
 import java.awt.image.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -55,6 +56,9 @@ public class Cam extends Application {
 
     boolean FILTER1 = false;
     boolean FILTER2 = false;
+
+    double ROTATION = 0;
+
     //Frames frames;
 
     public static void main(String[] args) {
@@ -181,10 +185,22 @@ public class Cam extends Application {
 
     private void rotateRight(ActionEvent actionEvent) {
         System.out.println("rotateRight");
+        ROTATION = ROTATION + 5 >= 360 ? 0 : ROTATION + 5;
+        System.out.println(ROTATION);
     }
 
     private void rotateLeft(ActionEvent actionEvent) {
         System.out.println("rotateLeft");
+        ROTATION = ROTATION - 5 <= 0 ? 360 : ROTATION - 5;
+        System.out.println(ROTATION);
+    }
+    private AffineTransformOp rotate_image(BufferedImage image){
+        double rotationRequired = Math.toRadians (ROTATION);
+        double locationX = image.getWidth() / 2;
+        double locationY = image.getHeight() / 2;
+        AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
+        AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+        return op;
     }
 
     public void documentationWindow(javafx.event.ActionEvent actionEvent) {
@@ -245,6 +261,8 @@ public class Cam extends Application {
         originalImage.setData(Raster.createRaster(originalImage.getSampleModel(),
                 new DataBufferByte(buffer, buffer.length), new Point() ) );
 
+        AffineTransformOp op = rotate_image(originalImage);
+
         // Apply negative
         if(FILTER2){
             set_negative(originalImage);
@@ -263,7 +281,7 @@ public class Cam extends Application {
 
         // Move image
         Graphics2D g = croppedImage.createGraphics();
-        g.drawImage(originalImage, X, Y, newImageWidth , newImageHeight , null);
+        g.drawImage(op.filter(originalImage, null), X, Y, newImageWidth , newImageHeight , null);
         g.dispose();
 
         // Add image to Group object
