@@ -54,6 +54,7 @@ public class Cam extends Application {
     double LED = 1;
 
     boolean FILTER1 = false;
+    boolean FILTER2 = false;
     //Frames frames;
 
     public static void main(String[] args) {
@@ -244,6 +245,10 @@ public class Cam extends Application {
         originalImage.setData(Raster.createRaster(originalImage.getSampleModel(),
                 new DataBufferByte(buffer, buffer.length), new Point() ) );
 
+        // Apply negative
+        if(FILTER2){
+            set_negative(originalImage);
+        }
         // Set image brightness
         set_brightness(originalImage, (int) BRIGHTNESS);
 
@@ -266,7 +271,7 @@ public class Cam extends Application {
         ImageView imageView = new ImageView();
         imageView.setImage(image);
 
-        // Apply filters
+        // Apply greyscale
         if(FILTER1){
             set_greyscale(imageView);
         }
@@ -459,6 +464,8 @@ public class Cam extends Application {
     //Filters
     private void filter2() {
         System.out.println("filter2");
+        FILTER2 = !FILTER2;
+        System.out.println(FILTER2);
     }
     private void filter1() {
         System.out.println("filter1");
@@ -472,6 +479,31 @@ public class Cam extends Application {
         colorAdjust.setBrightness(0.15);
         colorAdjust.setSaturation(-1);
         imageView.setEffect(colorAdjust);
+    }
+    private void set_negative(BufferedImage image){
+        // Get image width and height
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        // Convert to negative
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int p = image.getRGB(x, y);
+                int a = (p >> 24) & 0xff;
+                int r = (p >> 16) & 0xff;
+                int g = (p >> 8) & 0xff;
+                int b = p & 0xff;
+
+                // subtract RGB from 255
+                r = 255 - r;
+                g = 255 - g;
+                b = 255 - b;
+
+                // set new RGB value
+                p = (a << 24) | (r << 16) | (g << 8) | b;
+                image.setRGB(x, y, p);
+            }
+        }
     }
     //Edit - move
     private void move_down(javafx.event.ActionEvent actionEvent) {
