@@ -433,13 +433,26 @@ public class JavaFXApp extends Application implements ChangeListener<P_move>
 
    }
 
-   public void copy_shot()
-   {
-     Clipboard clipboard = Clipboard.getSystemClipboard();
-     ClipboardContent content = new ClipboardContent();
-     content.putImage(imageView2.getImage()); // the image you want, as javafx.scene.image.Image
-     clipboard.setContent(content);
-   }
+    public void copy_shot(ActionEvent actionEvent){
+        System.out.println("copy_shot");
+
+        FileInputStream inputstream;
+        try {
+            inputstream = new FileInputStream("example.jpg");
+        } catch(FileNotFoundException e) {
+            e.printStackTrace();
+            return;
+        }
+        Image image = new Image(inputstream);
+
+        //Setting image view
+        ImageView imageView2 = new ImageView(image);
+
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        ClipboardContent content = new ClipboardContent();
+        content.putImage(imageView2.getImage()); // the image you want, as javafx.scene.image.Image
+        clipboard.setContent(content);
+    }
 
 
    public void changed(ObservableValue<? extends P_move> observable,
