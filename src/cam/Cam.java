@@ -23,7 +23,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.*;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -50,7 +49,7 @@ public class Cam extends Application {
     int X = 0;
     int Y = 0;
     double BRIGHTNESS = 1;
-    double CONTRAST = 1;
+    float CONTRAST = 1;
     double LED = 1;
 
     //Frames frames;
@@ -166,7 +165,7 @@ public class Cam extends Application {
 
     private void change_contrast(Slider slider) {
         System.out.println("Contrast slider");
-        CONTRAST = slider.getValue();
+        CONTRAST = (float) (0.075 * slider.getValue());
         System.out.println(CONTRAST);
     }
 
@@ -246,6 +245,9 @@ public class Cam extends Application {
         // Set image brightness
         set_brightness(originalImage, (int) BRIGHTNESS);
 
+        // Set image contrast
+        set_contrast(originalImage, CONTRAST);
+
         // Zoom image
         int newImageWidth = (int)(FRAME_WIDTH * ZOOM);
         int newImageHeight = (int)(FRAME_HEIGHT * ZOOM);
@@ -277,23 +279,23 @@ public class Cam extends Application {
                         bOffs, null);
         return new BufferedImage(colorModel, raster, false, null);
     }
-    private BufferedImage set_brightness(BufferedImage originalImage, int brightnessValue){
+    private void set_contrast(BufferedImage image, float contrast){
+        RescaleOp op = new RescaleOp(contrast, 0, null);
+        image = op.filter(image, image);
+    }
+    private void set_brightness(BufferedImage originalImage, int brightnessValue){
         int[] rgb;
         for (int i = 0; i < originalImage.getWidth(); i++) {
-            // Inner loop for height of image
             for (int j = 0; j < originalImage.getHeight(); j++) {
                 rgb = originalImage.getRaster().getPixel(
                         i, j, new int[3]);
-                // Using(calling) method 1
                 int red = truncate(rgb[0] + brightnessValue);
                 int green = truncate(rgb[1] + brightnessValue);
                 int blue = truncate(rgb[2] + brightnessValue);
                 int[] arr = { red, green, blue };
-                // Using setPixel() method
                 originalImage.getRaster().setPixel(i, j, arr);
             }
         }
-    return originalImage;
     }
     private static int truncate(int value) {
         if (value < 0) {
