@@ -3,7 +3,6 @@ package src.cam;
 import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.image.*;
-import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -35,8 +34,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
 
-import javax.imageio.ImageIO;
-
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 
 public class Cam extends Application {
@@ -51,6 +48,9 @@ public class Cam extends Application {
     double ZOOM = 1;
     int X = 0;
     int Y = 0;
+    double BRIGHTNESS = 1;
+    double CONTRAST = 1;
+    double LED = 1;
 
     //Frames frames;
 
@@ -122,6 +122,17 @@ public class Cam extends Application {
         Text ledText = createText("Led", 400, 630);
         Slider ledSlider = createSlider(480, 620);
 
+        //Slider actions
+        contrastSlider.setOnMouseDragged(e->{
+            change_contrast(contrastSlider);
+        });
+        brightnessSlider.setOnMouseDragged(e->{
+            change_brightness(brightnessSlider);
+        });
+        ledSlider.setOnMouseDragged(e->{
+            change_led(ledSlider);
+        });
+
 
         //Creating a Group object
         Group root = new Group();
@@ -146,6 +157,23 @@ public class Cam extends Application {
         primaryStage.show();
     }
 
+    private void change_led(Slider slider) {
+        System.out.println("Led slider");
+        System.out.println(slider.getValue());
+        LED = slider.getValue();
+    }
+
+    private void change_contrast(Slider slider) {
+        System.out.println("Contrast slider");
+        System.out.println(slider.getValue());
+        CONTRAST = slider.getValue();
+    }
+
+    private void change_brightness(Slider slider) {
+        System.out.println("Brightness slider");
+        System.out.println(slider.getValue());
+        BRIGHTNESS = slider.getValue();
+    }
 
 
     private void rotateRight(ActionEvent actionEvent) {
