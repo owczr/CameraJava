@@ -23,6 +23,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.*;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -159,20 +160,20 @@ public class Cam extends Application {
 
     private void change_led(Slider slider) {
         System.out.println("Led slider");
-        System.out.println(slider.getValue());
         LED = slider.getValue();
+        System.out.println(LED);
     }
 
     private void change_contrast(Slider slider) {
         System.out.println("Contrast slider");
-        System.out.println(slider.getValue());
         CONTRAST = slider.getValue();
+        System.out.println(CONTRAST);
     }
 
     private void change_brightness(Slider slider) {
         System.out.println("Brightness slider");
-        System.out.println(slider.getValue());
         BRIGHTNESS = slider.getValue();
+        System.out.println(BRIGHTNESS);
     }
 
 
@@ -233,27 +234,30 @@ public class Cam extends Application {
 
         // buffer = frames.get_frame();
         Path path = Paths.get("example.rgb");
-
         byte[] byteImage = Files.readAllBytes(path);
-
         buffer = byteImage;
 
+        // Load frame to BufferedImage
         BufferedImage originalImage = create3ByteRGBImage(FRAME_WIDTH, FRAME_HEIGHT, new int[] {8, 8, 8},
                 new int[] {0, 1, 2});
-
         originalImage.setData(Raster.createRaster(originalImage.getSampleModel(),
                 new DataBufferByte(buffer, buffer.length), new Point() ) );
 
+        // Set image brightness
+        set_brightness(originalImage, (int) BRIGHTNESS);
+
+        // Zoom image
         int newImageWidth = (int)(FRAME_WIDTH * ZOOM);
         int newImageHeight = (int)(FRAME_HEIGHT * ZOOM);
-
         BufferedImage resizedImage = new BufferedImage(newImageWidth , newImageHeight, 	TYPE_INT_RGB);
         BufferedImage croppedImage = resizedImage.getSubimage(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
 
+        // Move image
         Graphics2D g = croppedImage.createGraphics();
         g.drawImage(originalImage, X, Y, newImageWidth , newImageHeight , null);
         g.dispose();
 
+        // Add image to Group object
         Image image = SwingFXUtils.toFXImage(croppedImage, null);
         ImageView imageView = new ImageView();
         imageView.setImage(image);
@@ -272,6 +276,33 @@ public class Cam extends Application {
                         width*3, 3,
                         bOffs, null);
         return new BufferedImage(colorModel, raster, false, null);
+    }
+    private BufferedImage set_brightness(BufferedImage originalImage, int brightnessValue){
+        int[] rgb;
+        for (int i = 0; i < originalImage.getWidth(); i++) {
+            // Inner loop for height of image
+            for (int j = 0; j < originalImage.getHeight(); j++) {
+                rgb = originalImage.getRaster().getPixel(
+                        i, j, new int[3]);
+                // Using(calling) method 1
+                int red = truncate(rgb[0] + brightnessValue);
+                int green = truncate(rgb[1] + brightnessValue);
+                int blue = truncate(rgb[2] + brightnessValue);
+                int[] arr = { red, green, blue };
+                // Using setPixel() method
+                originalImage.getRaster().setPixel(i, j, arr);
+            }
+        }
+    return originalImage;
+    }
+    private static int truncate(int value) {
+        if (value < 0) {
+            value = 0;
+        }
+        else if (value > 255) {
+            value = 255;
+        }
+        return value;
     }
 //private void disp_frame(Stage stage) throws IOException {
 //    pixelWriter = gc.getPixelWriter();
@@ -426,19 +457,19 @@ public class Cam extends Application {
     //Edit - move
     private void move_down(javafx.event.ActionEvent actionEvent) {
         System.out.println("move_down");
-        Y += 1;
+        Y += 5;
     }
     private void move_up(javafx.event.ActionEvent actionEvent) {
         System.out.println("move_up");
-        Y -= 1;
+        Y -= 5;
     }
     private void move_left(javafx.event.ActionEvent actionEvent) {
         System.out.println("move_left");
-        X -= 1;
+        X -= 5;
     }
     private void move_right(javafx.event.ActionEvent actionEvent) {
         System.out.println("move_right");
-        X += 1;
+        X += 5;
     }
     //Edit - zoom
     public void zoom_in(javafx.event.ActionEvent actionEvent){
