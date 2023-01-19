@@ -23,6 +23,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.*;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -52,6 +53,7 @@ public class Cam extends Application {
     float CONTRAST = 1;
     double LED = 1;
 
+    boolean FILTER1 = false;
     //Frames frames;
 
     public static void main(String[] args) {
@@ -263,6 +265,12 @@ public class Cam extends Application {
         Image image = SwingFXUtils.toFXImage(croppedImage, null);
         ImageView imageView = new ImageView();
         imageView.setImage(image);
+
+        // Apply filters
+        if(FILTER1){
+            set_greyscale(imageView);
+        }
+
         root.getChildren().add(imageView);
         }
     private BufferedImage create3ByteRGBImage(int width, int height, int[] nBits, int[] bOffs) {
@@ -454,8 +462,17 @@ public class Cam extends Application {
     }
     private void filter1() {
         System.out.println("filter1");
+        FILTER1 = !FILTER1;
+        System.out.println(FILTER1);
     }
-
+    private void set_greyscale(ImageView imageView){
+        ColorAdjust colorAdjust = new ColorAdjust();
+        colorAdjust.setContrast(-0.1);
+        colorAdjust.setHue(-0.05);
+        colorAdjust.setBrightness(0.15);
+        colorAdjust.setSaturation(-1);
+        imageView.setEffect(colorAdjust);
+    }
     //Edit - move
     private void move_down(javafx.event.ActionEvent actionEvent) {
         System.out.println("move_down");
