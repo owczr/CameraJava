@@ -11,8 +11,10 @@ import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
@@ -29,12 +31,17 @@ import javafx.scene.image.*;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
+
+import javax.imageio.ImageIO;
 
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 
@@ -630,17 +637,87 @@ public class Cam extends Application {
         secondaryStage.show();
     }
 
-    //TODO: Snapshot functions
-    public void save_shot(ActionEvent actionEvent){
+    public void save_shot(ActionEvent actionEvent)
+    {
         System.out.println("save_shot");
+
+        Scene scene = this.canvas.getScene();
+        Stage stage = (Stage) scene.getWindow();
+
+        FileInputStream inputstream;
+        try {
+            inputstream = new FileInputStream("example.jpg");
+        } catch(FileNotFoundException e) {
+            e.printStackTrace();
+            return;
+        }
+        Image image = new Image(inputstream);
+
+        //Setting image view
+        ImageView imageView2 = new ImageView(image);
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save snapshot");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("All Files", "*.*"),
+                new FileChooser.ExtensionFilter("JPG", "*.jpg"),
+                //Opening a dialog box
+                File file = fileChooser.showSaveDialog(stage);
+        //Save snapshot
+        if (file != null) {
+            try {
+                ImageIO.write(SwingFXUtils.fromFXImage(imageView2.getImage(),
+                        null), "jpg", file);
+            } catch (IOException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
     }
 
-    public void discard_shot(ActionEvent actionEvent){
-        System.out.println("discard_shot");
+
+    public void discard_shot(Stage snapStage)
+    {
+        //TODO: czyszczenie buffora z snapshotem?
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                "Do you really want to discard the snapshot?.",
+                ButtonType.YES, ButtonType.NO);
+
+        alert.setResizable(true);
+        alert.onShownProperty().addListener(e -> {
+            Platform.runLater(() -> alert.setResizable(false));
+        });
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.YES)
+        {
+            snapStage.close();
+            System.out.println("discard snapshot");
+        }
+        else
+        {
+        }
+
     }
 
     public void copy_shot(ActionEvent actionEvent){
         System.out.println("copy_shot");
-    }
 
+        FileInputStream inputstream;
+        try {
+            inputstream = new FileInputStream("example.jpg");
+        } catch(FileNotFoundException e) {
+            e.printStackTrace();
+            return;
+        }
+        Image image = new Image(inputstream);
+
+        //Setting image view
+        ImageView imageView2 = new ImageView(image);
+
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        ClipboardContent content = new ClipboardContent();
+        content.putImage(imageView2.getImage()); // the image you want, as javafx.scene.image.Image
+        clipboard.setContent(content);
+    }
 }
