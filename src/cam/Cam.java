@@ -7,6 +7,7 @@ import java.awt.image.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -66,6 +67,8 @@ public class Cam extends Application {
 
     double ROTATION = 0;
 
+    ImageView CURRENT_FRAME;
+
     //Frames frames;
 
     public static void main(String[] args) {
@@ -110,7 +113,7 @@ public class Cam extends Application {
 
         //Set button actions
         helpButton.setOnAction(this::documentationWindow);
-        rejectButton.setOnAction(this::discard_shot);
+        // rejectButton.setOnAction(this::discard_shot);
         saveButton.setOnAction(this::save_shot);
         upButton.setOnAction(this::move_up);
         downButton.setOnAction(this::move_down);
@@ -298,9 +301,9 @@ public class Cam extends Application {
 
         // Apply greyscale
         if(FILTER1){
-            set_greyscale(imageView);
+            imageView = set_greyscale(imageView);
         }
-
+        CURRENT_FRAME = imageView;
         root.getChildren().add(imageView);
         }
     private BufferedImage create3ByteRGBImage(int width, int height, int[] nBits, int[] bOffs) {
@@ -381,7 +384,7 @@ public class Cam extends Application {
             MenuItem copyM = new MenuItem("Copy");
             menu1.getItems().addAll(saveM,dcM,copyM);
             saveM.setOnAction(this::save_shot);
-            dcM.setOnAction(this::discard_shot);
+            // dcM.setOnAction(this::discard_shot);
             copyM.setOnAction(this::copy_shot);
         }
 
@@ -497,13 +500,14 @@ public class Cam extends Application {
         FILTER1 = !FILTER1;
         System.out.println(FILTER1);
     }
-    private void set_greyscale(ImageView imageView){
+    private ImageView set_greyscale(ImageView imageView){
         ColorAdjust colorAdjust = new ColorAdjust();
         colorAdjust.setContrast(-0.1);
         colorAdjust.setHue(-0.05);
         colorAdjust.setBrightness(0.15);
         colorAdjust.setSaturation(-1);
         imageView.setEffect(colorAdjust);
+        return imageView;
     }
     private void set_negative(BufferedImage image){
         // Get image width and height
@@ -594,14 +598,7 @@ public class Cam extends Application {
     }
 
     public void second_window(ActionEvent actionEvent) {
-        FileInputStream inputstream;
-        try {
-            inputstream = new FileInputStream("example.jpg");
-        } catch(FileNotFoundException e) {
-            e.printStackTrace();
-            return;
-        }
-        Image image = new Image(inputstream);
+        Image image = CURRENT_FRAME.getImage();
 
         //Setting image view
         ImageView imageView2 = new ImageView(image);
@@ -644,23 +641,13 @@ public class Cam extends Application {
         Scene scene = this.canvas.getScene();
         Stage stage = (Stage) scene.getWindow();
 
-        FileInputStream inputstream;
-        try {
-            inputstream = new FileInputStream("example.jpg");
-        } catch(FileNotFoundException e) {
-            e.printStackTrace();
-            return;
-        }
-        Image image = new Image(inputstream);
-
-        //Setting image view
-        ImageView imageView2 = new ImageView(image);
+        ImageView imageView2 = CURRENT_FRAME;
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save snapshot");
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("All Files", "*.*"),
-                new FileChooser.ExtensionFilter("JPG", "*.jpg"),
+                new FileChooser.ExtensionFilter("JPG", "*.jpg"));
                 //Opening a dialog box
                 File file = fileChooser.showSaveDialog(stage);
         //Save snapshot
